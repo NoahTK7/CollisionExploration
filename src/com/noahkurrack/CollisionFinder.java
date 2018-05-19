@@ -88,6 +88,7 @@ public class CollisionFinder {
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     //returns a string of random characters of a specified length
+    //from https://dzone.com/articles/generate-random-alpha-numeric
     private static String randomStringGenerator() {
         int size = 8;
         StringBuilder builder = new StringBuilder();
