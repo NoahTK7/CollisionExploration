@@ -20,16 +20,16 @@ public class CollisionFinder {
         //start timer
         long startTime = System.nanoTime();
 
-        //object that contains algorithm, takes input to produce hashes
+        //create object that contains algorithm, takes input to produce hashes
         CRC32 hasher = new CRC32();
 
         //add one default value (0) to array of outputs
         hashes.add(hasher.getValue());
 
-        //loop until collision found, max 2^32-1 (same amount as possible outputs of CRC32)
+        //loop until collision found, max 2^32-1 (same amount of possible hashes)
         for (int i = 0; i<Integer.MAX_VALUE; i++) {
 
-            //generate string to input to hashing algorithm (length of 8 characters)
+            //generate random string (random sequence of characters) to input to hashing algorithm (length of 8 characters)
             String currentString = randomStringGenerator(8);
 
             //input random string into CRC32 algorithm
@@ -79,7 +79,7 @@ public class CollisionFinder {
     //possible characters used when generating random strings
     //these characters used to avoid the occurrence of the same string being generated twice
     //  62 characters means 62^8 = 218,340,105,584,896 possible combinations
-    //  nearly 0 chance (hundreds of decimals places) of generating the same sting twice using the same birthday paradox formula
+    //  nearly 0 chance (hundreds of decimals places of 0s) of generating the same sting twice using the same birthday paradox formula
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     //returns a string of random characters of a specified length
