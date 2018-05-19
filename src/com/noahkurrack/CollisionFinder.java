@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018 Noah Kurrack. All rights reserved.
+ */
+
 package com.noahkurrack;
 
 import java.util.ArrayList;
