@@ -12,7 +12,7 @@ public class CollisionFinder {
 
     //utility
     public static void main(String[] args) {
-        findCollisions();
+        findCollisions(true);
     }
 
     //lists of attempted inputs (strings) and their outputs (hashes)
@@ -20,7 +20,7 @@ public class CollisionFinder {
     private static ArrayList<Long> hashes = new ArrayList<>();
 
     //begin meaningful code execution
-    static void findCollisions() {
+    static void findCollisions(boolean debug) {
         //starts timer
         long startTime = System.nanoTime();
 
@@ -34,7 +34,7 @@ public class CollisionFinder {
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
 
             //generates random string (random sequence of characters) to input to hashing algorithm (length of 8 characters)
-            String currentString = randomStringGenerator(8);
+            String currentString = randomStringGenerator();
 
             //inputs random string into CRC32 algorithm
             hasher.update(currentString.getBytes());
@@ -43,7 +43,9 @@ public class CollisionFinder {
             long hash = hasher.getValue();
 
             //displays current progress to user
-            System.out.print("\rCurrent hash: " + hash + "\t(hash #" + (i + 1) + ")");
+            if (debug) {
+                System.out.print("\rCurrent hash: " + hash + "\t(hash #" + (i + 1) + ")");
+            }
 
             //resets algorithm for next hash
             hasher.reset();
@@ -72,7 +74,6 @@ public class CollisionFinder {
                 System.out.println("Collided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash);
                 System.out.println("Number of attempts:\t" + (i + 1) + ", (First occurrence: " + (otherIndex + 1) + ")");
                 System.out.println("Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds");
-                System.out.println("------------------------");
 
                 //exit program
                 break;
@@ -87,7 +88,8 @@ public class CollisionFinder {
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     //returns a string of random characters of a specified length
-    private static String randomStringGenerator(int size) {
+    private static String randomStringGenerator() {
+        int size = 8;
         StringBuilder builder = new StringBuilder();
         while (size-- != 0) {
             int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
