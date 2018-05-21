@@ -9,3 +9,6 @@ javac -d out -cp "src/com/noahkurrack/:dependencies/json-simple-1.1.1.jar" src/c
 
 java -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.CollisionFinder
 java -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.Runner
+
+
+Runner class takes one argument: number of time to run CollisionFinder.findCollision().

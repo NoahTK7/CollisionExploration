@@ -58,7 +58,7 @@ public class CollisionFinder {
             long hash = hasher.getValue();
 
             //displays current progress to user
-            System.out.print("\rCurrent hash: " + hash + "     \t\t(hash #" + (i + 1) + ")");
+            System.out.print("\rCurrent hash: " + hash + "       \t\t(hash #" + (i + 1) + ")");
 
             //resets algorithm for next hash
             hasher.reset();
@@ -93,13 +93,8 @@ public class CollisionFinder {
                 JSONObject json;
                 JSONArray collisionsArray;
                 try {
-                    try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(output, false));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     if (output.isFile() && output.canRead()) {
-                        json = (JSONObject) jsonParser.parse(new FileReader("collisions.json"));
+                        json = (JSONObject) jsonParser.parse(new FileReader(output));
                         collisionsArray = (JSONArray) json.get("collisions");
                     } else {
                         json = new JSONObject();
@@ -122,6 +117,7 @@ public class CollisionFinder {
 
                     json.put("collisions", collisionsArray);
 
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(output, false));
                     writer.write(json.toJSONString());
                     writer.close();
                 } catch (IOException | ParseException e) {
