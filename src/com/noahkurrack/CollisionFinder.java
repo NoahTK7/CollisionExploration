@@ -19,7 +19,7 @@ public class CollisionFinder {
 
     //utility
     public static void main(String[] args) {
-        CollisionFinder collisionFinder = new CollisionFinder();
+        CollisionFinder collisionFinder = new CollisionFinder(true);
         collisionFinder.findCollisions();
     }
 
@@ -29,9 +29,12 @@ public class CollisionFinder {
     private File output;
     private BufferedWriter writer;
 
-    public CollisionFinder() {
+    private boolean verbose;
+
+    public CollisionFinder(boolean verbose) {
         results = new ArrayList<>();
         output = new File("collisions.json");
+        this.verbose = verbose;
     }
 
     //begin meaningful code execution
@@ -58,7 +61,9 @@ public class CollisionFinder {
             long hash = hasher.getValue();
 
             //displays current progress to user
-            System.out.print("\rCurrent hash: " + hash + "       \t\t(hash #" + (i + 1) + ")");
+            if (verbose && i % 100 == 0) {
+                System.out.print("\rCurrent hash: " + hash + "       \t\t(hash #" + (i + 1) + ")");
+            }
 
             //resets algorithm for next hash
             hasher.reset();
@@ -84,9 +89,11 @@ public class CollisionFinder {
 
                 //displays information about the collision to record in a spreadsheet
                 System.out.println("\nCollision!");
-                System.out.println("Collided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash);
-                System.out.println("Number of attempts:\t" + (i + 1) + ", (First occurrence: " + (otherIndex + 1) + ")");
-                System.out.println("Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds\n------------------------");
+                if (verbose) {
+                    System.out.println("Collided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash);
+                    System.out.println("Number of attempts:\t" + (i + 1) + ", (First occurrence: " + (otherIndex + 1) + ")");
+                    System.out.println("Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds\n------------------------");
+                }
 
                 //serialize data to json, output to file
                 JSONParser jsonParser = new JSONParser();

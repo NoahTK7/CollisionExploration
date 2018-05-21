@@ -7,8 +7,18 @@ To compile and run:
 
 javac -d out -cp "src/com/noahkurrack/:dependencies/json-simple-1.1.1.jar" src/com/noahkurrack/*.java
 
-java -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.CollisionFinder
-java -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.Runner
+java -server -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.CollisionFinder
+java -server -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.Runner <amount> <verbose>
 
 
-Runner class takes one argument: number of time to run CollisionFinder.findCollision().
+Runner class arguments:
+
+    amount: integer - number of times to run CollisionFinder.findCollision() [default: 2]
+    verbose: boolean - output stats to command line [default: false]
+    
+
+TODO:
+
+-file output argument
+-threading
+-background process
