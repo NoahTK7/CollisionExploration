@@ -9,8 +9,8 @@ public class Runner {
     public static void main(String[] args) {
 
         //run collision finder several times (data recorded to text file)
-        for (int i = 0; i < 2; i++) {
-            CollisionFinder.findCollisions(false);
+        for (int i = 0; i < 5; i++) {
+            CollisionFinder.findCollisions();
         }
 
     }
