@@ -13,23 +13,29 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.zip.CRC32;
 
 public class CollisionFinder {
 
     //utility
     public static void main(String[] args) {
-        findCollisions();
+        CollisionFinder collisionFinder = new CollisionFinder();
+        collisionFinder.findCollisions();
     }
 
     //list of attempted inputs (strings) and their respective outputs (hashes)
-    private static ArrayList<ResultPair> results = new ArrayList();
+    private ArrayList<ResultPair> results;
 
-    private static BufferedWriter writer;
+    private File output;
+    private BufferedWriter writer;
+
+    public CollisionFinder() {
+        results = new ArrayList<>();
+        output = new File("collisions.json");
+    }
 
     //begin meaningful code execution
-    static void findCollisions() {
+    void findCollisions() {
         //starts timer
         long startTime = System.nanoTime();
 
@@ -52,7 +58,7 @@ public class CollisionFinder {
             long hash = hasher.getValue();
 
             //displays current progress to user
-            System.out.print("\rCurrent hash: " + hash + "\t(hash #" + (i + 1) + ")");
+            System.out.print("\rCurrent hash: " + hash + "     \t\t(hash #" + (i + 1) + ")");
 
             //resets algorithm for next hash
             hasher.reset();
@@ -68,7 +74,7 @@ public class CollisionFinder {
 
                 //finds first string that produces same hash as current string
                 //only executes after collision found (that means there is always two inputs that produce the given output, this code finds the first one)
-                int otherIndex = Collections.binarySearch(results, new ResultPair("", hash), Comparator.comparing(ResultPair::value));
+                int otherIndex = Collections.binarySearch(results, new ResultPair(" ", hash), Comparator.comparing(ResultPair::value));
                 String firstString = results.get(otherIndex).key();
 
                 //confirms outputs match for both inputs
@@ -77,17 +83,21 @@ public class CollisionFinder {
                 long confirmHash = hasher.getValue();
 
                 //displays information about the collision to record in a spreadsheet
-                System.out.println("\n------------------------\nCollision!");
+                System.out.println("\nCollision!");
                 System.out.println("Collided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash);
                 System.out.println("Number of attempts:\t" + (i + 1) + ", (First occurrence: " + (otherIndex + 1) + ")");
-                System.out.println("Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds");
+                System.out.println("Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds\n------------------------");
 
                 //serialize data to json, output to file
                 JSONParser jsonParser = new JSONParser();
                 JSONObject json;
                 JSONArray collisionsArray;
                 try {
-                    File output = new File("collisions.json");
+                    try {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(output, false));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     if (output.isFile() && output.canRead()) {
                         json = (JSONObject) jsonParser.parse(new FileReader("collisions.json"));
                         collisionsArray = (JSONArray) json.get("collisions");
@@ -112,12 +122,9 @@ public class CollisionFinder {
 
                     json.put("collisions", collisionsArray);
 
-                    writer = new BufferedWriter(new FileWriter(output, false));
                     writer.write(json.toJSONString());
                     writer.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
+                } catch (IOException | ParseException e) {
                     e.printStackTrace();
                 }
 
@@ -148,7 +155,7 @@ public class CollisionFinder {
 
     //checks if collision has occurred (i.e. if output has been produced before)
     //otherwise, inserts input and output into their respective lists
-    private static boolean insertInOrder(ResultPair resultPair) {
+    private boolean insertInOrder(ResultPair resultPair) {
         for (int i = 0; i < results.size(); i++) {
             if (resultPair.value().equals(results.get(i).value())) {
                 //collision found
@@ -161,5 +168,9 @@ public class CollisionFinder {
         }
         results.add(resultPair);
         return true;
+    }
+
+    void reset() {
+        results.clear();
     }
 }
