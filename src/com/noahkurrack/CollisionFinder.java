@@ -4,6 +4,12 @@
 
 package com.noahkurrack;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.zip.CRC32;
@@ -19,10 +25,15 @@ public class CollisionFinder {
     private static ArrayList<String> strings = new ArrayList<>();
     private static ArrayList<Long> hashes = new ArrayList<>();
 
+    private static int ID = 0;
+
+    private static BufferedWriter writer;
+
     //begin meaningful code execution
     static void findCollisions(boolean debug) {
         //starts timer
         long startTime = System.nanoTime();
+        ID++;
 
         //creates object that contains algorithm, takes input to produce hashes
         CRC32 hasher = new CRC32();
@@ -74,6 +85,60 @@ public class CollisionFinder {
                 System.out.println("Collided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash);
                 System.out.println("Number of attempts:\t" + (i + 1) + ", (First occurrence: " + (otherIndex + 1) + ")");
                 System.out.println("Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds");
+
+                JSONParser jsonParser = new JSONParser();
+                JSONObject json;
+                JSONArray collisionsArray;
+                try {
+                    File output = new File("collisions.json");
+                    if (output.isFile() && output.canRead()) {
+                        json = (JSONObject) jsonParser.parse(new FileReader("collisions.json"));
+                        collisionsArray = (JSONArray) json.get("collisions");
+                    } else {
+                        json = new JSONObject();
+                        collisionsArray = new JSONArray();
+                    }
+                    JSONObject currentCollision = new JSONObject();
+                    currentCollision.put("collision-id",ID);
+                    currentCollision.put("match-attempts", (i+1));
+                    JSONArray locs = new JSONArray();
+                    locs.add((i+1));
+                    locs.add((otherIndex+1));
+                    currentCollision.put("locations", locs);
+                    JSONArray strings = new JSONArray();
+                    strings.add(currentString);
+                    strings.add(firstString);
+                    currentCollision.put("strings", strings);
+                    currentCollision.put("hash", hash);
+                    currentCollision.put("time", ((stopTime - startTime) / 1000000));
+                    collisionsArray.add(currentCollision);
+
+                    json.put("collisions", collisionsArray);
+
+                    writer = new BufferedWriter(new FileWriter(output, false));
+                    writer.write(json.toJSONString());
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                /*
+                String out = "";
+                out += "\n------------------------\nCollision!";
+                out += "\nCollided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash;
+                out += "\nNumber of attempts:\t" + (i + 1) + ", (First occurrence: " + (otherIndex + 1) + ")";
+                out += "Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds";
+
+                try {
+                    writer = new BufferedWriter(new FileWriter("output.txt", true));
+                    writer.append(out);
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                */
 
                 //exit program
                 break;
