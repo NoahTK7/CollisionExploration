@@ -24,6 +24,7 @@ public class Runner {
                 .addObject(runner)
                 .build()
                 .parse(args);
+        runner.run();
     }
 
     void run() {
