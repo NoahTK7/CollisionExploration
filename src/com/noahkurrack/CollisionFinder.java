@@ -19,7 +19,7 @@ public class CollisionFinder {
 
     //utility
     public static void main(String[] args) {
-        CollisionFinder collisionFinder = new CollisionFinder(true);
+        CollisionFinder collisionFinder = new CollisionFinder(true, true);
         collisionFinder.findCollisions();
     }
 
@@ -30,11 +30,13 @@ public class CollisionFinder {
     private BufferedWriter writer;
 
     private boolean verbose;
+    private boolean fileOut;
 
-    public CollisionFinder(boolean verbose) {
+    public CollisionFinder(boolean verbose, boolean fileOut) {
         results = new ArrayList<>();
         output = new File("collisions.json");
         this.verbose = verbose;
+        this.fileOut = fileOut;
     }
 
     //begin meaningful code execution
@@ -89,46 +91,49 @@ public class CollisionFinder {
 
                 //displays information about the collision to record in a spreadsheet
                 System.out.println("\nCollision!");
+
                 if (verbose) {
                     System.out.println("Collided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash);
                     System.out.println("Number of attempts:\t" + (i + 1) + ", (First occurrence: " + (otherIndex + 1) + ")");
                     System.out.println("Time elapsed: " + ((stopTime - startTime) / 1000000) + " milliseconds\n------------------------");
                 }
 
-                //serialize data to json, output to file
-                JSONParser jsonParser = new JSONParser();
-                JSONObject json;
-                JSONArray collisionsArray;
-                try {
-                    if (output.isFile() && output.canRead()) {
-                        json = (JSONObject) jsonParser.parse(new FileReader(output));
-                        collisionsArray = (JSONArray) json.get("collisions");
-                    } else {
-                        json = new JSONObject();
-                        collisionsArray = new JSONArray();
+                if (fileOut) {
+                    //serialize data to json, output to file
+                    JSONParser jsonParser = new JSONParser();
+                    JSONObject json;
+                    JSONArray collisionsArray;
+                    try {
+                        if (output.isFile() && output.canRead()) {
+                            json = (JSONObject) jsonParser.parse(new FileReader(output));
+                            collisionsArray = (JSONArray) json.get("collisions");
+                        } else {
+                            json = new JSONObject();
+                            collisionsArray = new JSONArray();
+                        }
+                        JSONObject currentCollision = new JSONObject();
+                        currentCollision.put("collision-id", collisionsArray.size() + 1);
+                        currentCollision.put("match-attempts", (i + 1));
+                        JSONArray locs = new JSONArray();
+                        locs.add((i + 1));
+                        locs.add((otherIndex + 1));
+                        currentCollision.put("locations", locs);
+                        JSONArray strings = new JSONArray();
+                        strings.add(currentString);
+                        strings.add(firstString);
+                        currentCollision.put("strings", strings);
+                        currentCollision.put("hash", hash);
+                        currentCollision.put("time", ((stopTime - startTime) / 1000000));
+                        collisionsArray.add(currentCollision);
+
+                        json.put("collisions", collisionsArray);
+
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(output, false));
+                        writer.write(json.toJSONString());
+                        writer.close();
+                    } catch (IOException | ParseException e) {
+                        e.printStackTrace();
                     }
-                    JSONObject currentCollision = new JSONObject();
-                    currentCollision.put("collision-id",collisionsArray.size()+1);
-                    currentCollision.put("match-attempts", (i+1));
-                    JSONArray locs = new JSONArray();
-                    locs.add((i+1));
-                    locs.add((otherIndex+1));
-                    currentCollision.put("locations", locs);
-                    JSONArray strings = new JSONArray();
-                    strings.add(currentString);
-                    strings.add(firstString);
-                    currentCollision.put("strings", strings);
-                    currentCollision.put("hash", hash);
-                    currentCollision.put("time", ((stopTime - startTime) / 1000000));
-                    collisionsArray.add(currentCollision);
-
-                    json.put("collisions", collisionsArray);
-
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(output, false));
-                    writer.write(json.toJSONString());
-                    writer.close();
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
                 }
 
                 //exit program

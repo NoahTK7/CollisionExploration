@@ -5,20 +5,21 @@ Created by Noah Kurrack, May 19, 2018.
 
 To compile and run:
 
-javac -d out -cp "src/com/noahkurrack/:dependencies/json-simple-1.1.1.jar" src/com/noahkurrack/*.java
+javac -d out -cp "src/com/noahkurrack/:dependencies/json-simple-1.1.1.jar:dependencies/jcommander-1.73.jar" src/com/noahkurrack/*.java
 
-java -server -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.CollisionFinder
-java -server -cp "out/:dependencies/json-simple-1.1.1.jar" com.noahkurrack.Runner <amount> <verbose>
+java -server -cp "out/:dependencies/json-simple-1.1.1.jar:dependencies/jcommander-1.73.jar" com.noahkurrack.CollisionFinder
+java -server -cp "out/:dependencies/json-simple-1.1.1.jar:dependencies/jcommander-1.73.jar" com.noahkurrack.Runner
 
 
 Runner class arguments:
 
-    amount: integer - number of times to run CollisionFinder.findCollision() [default: 2]
-    verbose: boolean - output stats to command line [default: false]
+    --amount (-a): integer - number of times to run CollisionFinder.findCollision() [default: 2]
+    --verbose (-v): boolean - output stats to command line [default: false]
+    --file (-f): boolean - output stats to file (collisions.json) [default: true]
     
 
 TODO:
 
--file output argument
 -threading
 -background process
+-build system
