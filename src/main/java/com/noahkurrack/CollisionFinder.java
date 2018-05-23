@@ -4,6 +4,7 @@
 
 package com.noahkurrack;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -128,7 +129,7 @@ public class CollisionFinder {
 
                         json.put("collisions", collisionsArray);
 
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(output, false));
+                        writer = new BufferedWriter(new FileWriter(output, false));
                         writer.write(json.toJSONString());
                         writer.close();
                     } catch (IOException | ParseException e) {
