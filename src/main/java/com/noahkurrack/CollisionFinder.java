@@ -20,7 +20,7 @@ public class CollisionFinder {
 
     //utility
     public static void main(String[] args) {
-        CollisionFinder collisionFinder = new CollisionFinder(true, true);
+        CollisionFinder collisionFinder = new CollisionFinder(true, true, 1);
         collisionFinder.findCollisions();
     }
 
@@ -33,11 +33,14 @@ public class CollisionFinder {
     private boolean verbose;
     private boolean fileOut;
 
-    public CollisionFinder(boolean verbose, boolean fileOut) {
+    private int threadId;
+
+    public CollisionFinder(boolean verbose, boolean fileOut, int threadId) {
         results = new ArrayList<>();
-        output = new File("collisions.json");
         this.verbose = verbose;
         this.fileOut = fileOut;
+        this.threadId = threadId;
+        output = new File("out/collisions-"+threadId+".json");
     }
 
     //begin meaningful code execution
@@ -91,7 +94,7 @@ public class CollisionFinder {
                 long confirmHash = hasher.getValue();
 
                 //displays information about the collision to record in a spreadsheet
-                System.out.println("\nCollision!");
+                System.out.println("\n[Thread: "+threadId+"] Collision!");
 
                 if (verbose) {
                     System.out.println("Collided hash:\t" + currentString + " --> " + hash + "\n\t\t\t\t" + firstString + " --> " + confirmHash);

@@ -42,5 +42,5 @@ Created by Noah Kurrack, May 19, 2018. See [license](./license) file.
 
 ###### TODO
 
-- make background process
+- better encapsulation (File class, Collision data class)
 - further configurability
