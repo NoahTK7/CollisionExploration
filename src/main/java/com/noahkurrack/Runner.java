@@ -67,7 +67,7 @@ public class Runner {
             }
         }
         processFiles();
-        System.out.println("Done... exiting");
+        System.out.println("Done... exiting.");
     }
 
     public Runner() {
@@ -88,7 +88,7 @@ public class Runner {
         //combine collision files
         System.out.println("Processing concurrent files...");
 
-        ArrayList<File> files = new ArrayList<File>();
+        ArrayList<File> files = new ArrayList<>();
 
         File folder = new File("./out");
         File[] listOfFiles = folder.listFiles();
@@ -100,11 +100,21 @@ public class Runner {
         }
 
         File finalFile = new  File("out/collisions.json");
-        JSONObject finalJSON = new JSONObject();
+        JSONParser jsonParser = new JSONParser();
+
+        JSONObject previousJson;
+        JSONArray previousCollisions;
+
+        JSONObject finalJson = new JSONObject();
         JSONArray finalArray = new JSONArray();
 
+        if (finalFile.isFile() && finalFile.canRead()) {
+            previousJson = (JSONObject) jsonParser.parse(new FileReader(finalFile));
+            previousCollisions = (JSONArray) previousJson.get("collisions");
+            finalArray.addAll(previousCollisions);
+        }
+
         for (File currentFile:files) {
-            JSONParser jsonParser = new JSONParser();
             JSONObject json = (JSONObject) jsonParser.parse(new FileReader(currentFile));
             JSONArray collisionsArray = (JSONArray) json.get("collisions");
             for (Object collision : collisionsArray) {
@@ -113,10 +123,10 @@ public class Runner {
                 finalArray.add(collision);
             }
         }
-        finalJSON.put("collisions", finalArray);
+        finalJson.put("collisions", finalArray);
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(finalFile, false));
-        writer.write(finalJSON.toJSONString());
+        writer.write(finalJson.toJSONString());
         writer.close();
 
         //delete partial files
