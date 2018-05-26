@@ -4,18 +4,21 @@
 
 package com.noahkurrack;
 
-public class ResultPair {
+class ResultPair {
 
-    private final String key;
-    private final Long value;
+    private final String input;
+    private final long hash;
 
-    public ResultPair(String aKey, Long aValue)
-    {
-        key   = aKey;
-        value = aValue;
+    ResultPair(String input, long hash) {
+        this.input = input;
+        this.hash = hash;
     }
 
-    public String key()   { return key; }
-    public Long value() { return value; }
+    String getInput() {
+        return input;
+    }
+    long getHash() {
+        return hash;
+    }
 
 }

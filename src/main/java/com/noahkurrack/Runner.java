@@ -6,13 +6,10 @@ package com.noahkurrack;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
+import org.json.simple.parser.ParseException;
 import java.io.*;
-import java.util.ArrayList;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +24,8 @@ public class Runner {
     @Parameter(names = {"--verbose", "-v"}, description = "Output stats to command line [default: false]")
     private boolean verbose = false;
 
-    @Parameter(names = {"--file", "-f"}, description = "Output stats to file (collisions.json) [default: true]")
-    private boolean fileOut = true;
+    @Parameter(names = {"--nofile", "-nf"}, description = "Output stats to file (collisions.json) [default: false]")
+    private boolean noFile = false;
 
     private int threads;
     private ExecutorService executor;
@@ -39,6 +36,7 @@ public class Runner {
                 .addObject(runner)
                 .build()
                 .parse(args);
+        updateGlobalConfig(runner.amount, runner.verbose, runner.noFile);
         try {
             runner.startRun();
         } catch (InterruptedException | ParseException | IOException e) {
@@ -46,8 +44,13 @@ public class Runner {
         }
     }
 
+    private static void updateGlobalConfig(int amount, boolean verbose, boolean noFile) {
+        Config.AMOUNT = amount;
+        Config.VERBOSE = verbose;
+        Config.NO_FILE = noFile;
+    }
+
     private void startRun() throws InterruptedException, IOException, ParseException {
-        //TODO: finalize logic
         if (amount < threads) {
             this.perThreadAmount = amount;
             this.threads = 1;
@@ -66,7 +69,7 @@ public class Runner {
                 break;
             }
         }
-        processFiles();
+        FileManager.processFiles();
         System.out.println("Done... exiting.");
     }
 
@@ -76,62 +79,11 @@ public class Runner {
     }
 
     private void run(int threadId) {
-        //run collision finder several times (data recorded to text file)
-        CollisionFinder collisionFinder = new CollisionFinder(verbose, fileOut, threadId);
+        //run collision finder several times (data recorded to json file)
+        CollisionFinder collisionFinder = new CollisionFinder(threadId);
         for (int i = 1; i <= perThreadAmount; i++) {
             collisionFinder.reset();
             collisionFinder.findCollisions();
-        }
-    }
-
-    private void processFiles() throws IOException, ParseException {
-        //combine collision files
-        System.out.println("Processing concurrent files...");
-
-        ArrayList<File> files = new ArrayList<>();
-
-        File folder = new File("./out");
-        File[] listOfFiles = folder.listFiles();
-
-        for (File file : (listOfFiles != null) ? listOfFiles : new File[0]) {
-            if (file.isFile() && file.getName().contains(".json")) {
-                files.add(file);
-            }
-        }
-
-        File finalFile = new  File("out/collisions.json");
-        JSONParser jsonParser = new JSONParser();
-
-        JSONObject previousJson;
-        JSONArray previousCollisions;
-
-        JSONObject finalJson = new JSONObject();
-        JSONArray finalArray = new JSONArray();
-
-        if (finalFile.isFile() && finalFile.canRead()) {
-            previousJson = (JSONObject) jsonParser.parse(new FileReader(finalFile));
-            previousCollisions = (JSONArray) previousJson.get("collisions");
-            finalArray.addAll(previousCollisions);
-        }
-
-        for (File currentFile:files) {
-            JSONObject json = (JSONObject) jsonParser.parse(new FileReader(currentFile));
-            JSONArray collisionsArray = (JSONArray) json.get("collisions");
-            for (Object collision : collisionsArray) {
-                collision = jsonParser.parse(collision.toString());
-                ((JSONObject) collision).replace("collision-id", finalArray.size()+1);
-                finalArray.add(collision);
-            }
-        }
-        finalJson.put("collisions", finalArray);
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(finalFile, false));
-        writer.write(finalJson.toJSONString());
-        writer.close();
-
-        //delete partial files
-        for (File currentFile:files) {
-            currentFile.delete();
         }
     }
 }
