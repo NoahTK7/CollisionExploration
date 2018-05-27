@@ -99,7 +99,7 @@ class FileManager {
         }
         finalJson.put("collisions", finalArray);
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(finalFile, true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(finalFile, false));
         writer.write(finalJson.toJSONString());
         writer.close();
 
