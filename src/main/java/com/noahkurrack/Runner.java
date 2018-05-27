@@ -17,15 +17,15 @@ import java.util.concurrent.TimeUnit;
 public class Runner {
 
     @Parameter(names = {"--amount", "-a"}, description = "Number of times to run CollisionFinder [default: 2]")
-    private int amount = 2;
+    private int amount = Config.AMOUNT;
 
     private int perThreadAmount;
 
-    @Parameter(names = {"--verbose", "-v"}, description = "Output stats to command line [default: false]")
-    private boolean verbose = false;
+    @Parameter(names = {"--verbose", "-v"}, description = "Output stats to command line")
+    private boolean verbose = Config.VERBOSE;
 
-    @Parameter(names = {"--nofile", "-nf"}, description = "Output stats to file (collisions.json) [default: false]")
-    private boolean noFile = false;
+    @Parameter(names = {"--nofile", "-nf"}, description = "No output of stats to file (collisions.json)")
+    private boolean noFile = Config.NO_FILE;
 
     private int threads;
     private ExecutorService executor;

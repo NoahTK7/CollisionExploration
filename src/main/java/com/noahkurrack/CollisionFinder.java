@@ -26,19 +26,18 @@ public class CollisionFinder {
     private int threadId;
 
     public CollisionFinder(int threadId) {
-        this.results = new ArrayList<>();
+        //creates object that contains algorithm, takes input to produce hashes
         hasher = new CRC32();
+
+        this.results = new ArrayList<>();
         this.threadId = threadId;
-        fileManager = new FileManager(threadId);
+        this.fileManager = new FileManager(threadId);
     }
 
     //begin meaningful code execution
     void findCollisions() {
         //starts timer
         long startTime = System.nanoTime();
-
-        //creates object that contains algorithm, takes input to produce hashes
-        hasher = new CRC32();
 
         //add one default hash (0) to array of outputs
         results.add(new ResultPair("", hasher.getValue()));
