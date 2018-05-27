@@ -28,8 +28,8 @@ Uses Shadow plugin to create 'fat jar' that includes dependencies for distributi
 Runner class arguments:
 
     --amount (-a):  integer - number of times to run CollisionFinder [default: 2]
-    --verbose (-v): boolean - output stats to command line [default: false]
-    --file (-f):    boolean - output stats to file (collisions.json) [default: true]
+    --verbose (-v): boolean - output stats to command line
+    --nofile (-nf):    boolean - no output of stats to file (collisions.json)
 
 ## Credit
 Created by Noah Kurrack, May 19, 2018. See [license](./license) file.
