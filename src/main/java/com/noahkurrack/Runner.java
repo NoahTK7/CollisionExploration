@@ -36,7 +36,7 @@ public class Runner {
                 .addObject(runner)
                 .build()
                 .parse(args);
-        updateGlobalConfig(runner.amount, runner.verbose, runner.noFile);
+        runner.updateGlobalConfig();
         try {
             runner.startRun();
         } catch (InterruptedException | ParseException | IOException e) {
@@ -44,10 +44,10 @@ public class Runner {
         }
     }
 
-    private static void updateGlobalConfig(int amount, boolean verbose, boolean noFile) {
-        Config.AMOUNT = amount;
-        Config.VERBOSE = verbose;
-        Config.NO_FILE = noFile;
+    private void updateGlobalConfig() {
+        Config.AMOUNT = this.amount;
+        Config.VERBOSE = this.verbose;
+        Config.NO_FILE = this.noFile;
     }
 
     private void startRun() throws InterruptedException, IOException, ParseException {

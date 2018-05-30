@@ -21,7 +21,7 @@ public class CollisionFinder {
     private ArrayList<ResultPair> results;
 
     private FileManager fileManager;
-    private static CRC32 hasher;
+    private CRC32 hasher;
 
     private int threadId;
 
@@ -48,6 +48,9 @@ public class CollisionFinder {
             //generates random string (random sequence of characters) to input to hashing algorithm (length of 8 characters)
             String currentString = randomStringGenerator();
 
+            //reset hashing algorithm
+            hasher.reset();
+
             //inputs random string into CRC32 algorithm
             hasher.update(currentString.getBytes());
 
@@ -59,9 +62,6 @@ public class CollisionFinder {
                 System.out.print("\rCurrent hash: " + hash + "       \t\t(hash #" + (i + 1) + ")");
             }
 
-            //resets algorithm for next hash
-            hasher.reset();
-
             ResultPair resultPair = new ResultPair(currentString, hash);
 
             //checks if collision found
@@ -69,7 +69,7 @@ public class CollisionFinder {
             if (!insertInOrder(resultPair)) {
 
                 //executes when collision found
-                Collision currentCollision = new Collision(resultPair, (i+1));
+                Collision currentCollision = new Collision(resultPair, i);
 
                 //stops timer
                 long stopTime = System.nanoTime();
@@ -78,15 +78,20 @@ public class CollisionFinder {
                 //finds first string that produces same hash as current string
                 //only executes after collision found (that means there is always two inputs that produce the given output, this code finds the first one)
                 int otherIndex = Collections.binarySearch(results, new ResultPair(" ", hash), Comparator.comparing(ResultPair::getHash));
-                currentCollision.setLoc2(otherIndex);
                 String firstString = results.get(otherIndex).getInput();
+
+                currentCollision.setLoc2(otherIndex);
                 currentCollision.setInput2(firstString);
 
                 //confirms outputs match for both inputs
                 hasher.reset();
                 hasher.update(firstString.getBytes());
                 long confirmHash = hasher.getValue();
-                if (hash == confirmHash) currentCollision.setConfirmed(true);
+                currentCollision.setHash2(confirmHash);
+
+                if (hash == confirmHash) {
+                    currentCollision.setConfirmed(true);
+                }
 
                 //displays information about the collision to record in a spreadsheet
                 System.out.println("\n[Thread: "+threadId+"] Collision!\n");

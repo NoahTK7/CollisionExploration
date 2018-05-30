@@ -4,7 +4,7 @@
 
 package com.noahkurrack;
 
-public class Collision {
+class Collision {
 
     private String input;
     private long hash;
@@ -13,16 +13,18 @@ public class Collision {
 
     private int matchAttempts;
     private String input2;
+    private long hash2;
     private int loc2;
     private boolean confirmed;
 
-    public Collision(ResultPair resultPair, int matchAttempts) {
+    Collision(ResultPair resultPair, int matchAttempts) {
         this.input = resultPair.getInput();
         this.hash = resultPair.getHash();
         this.matchAttempts = matchAttempts;
 
         this.time = -1;
         this.input2 = null;
+        this.hash2= -1;
         this.loc2 = -1;
         this.confirmed = false;
     }
@@ -33,6 +35,10 @@ public class Collision {
 
     void setInput2(String input2) {
         this.input2 = input2;
+    }
+
+    void setHash2(long hash2) {
+        this.hash2 = hash2;
     }
 
     void setLoc2(int loc2) {
@@ -61,6 +67,10 @@ public class Collision {
 
     String getInput2() {
         return input2;
+    }
+
+    long getHash2() {
+        return hash2;
     }
 
     int getLoc2() {
