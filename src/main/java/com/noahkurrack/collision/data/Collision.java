@@ -2,9 +2,9 @@
  * Copyright (c) 2018 Noah Kurrack. All rights reserved.
  */
 
-package com.noahkurrack;
+package com.noahkurrack.collision.data;
 
-class Collision {
+public class Collision {
 
     private String input;
     private long hash;
@@ -17,7 +17,7 @@ class Collision {
     private int loc2;
     private boolean confirmed;
 
-    Collision(ResultPair resultPair, int matchAttempts) {
+    public Collision(ResultPair resultPair, int matchAttempts) {
         this.input = resultPair.getInput();
         this.hash = resultPair.getHash();
         this.matchAttempts = matchAttempts;
@@ -29,55 +29,55 @@ class Collision {
         this.confirmed = false;
     }
 
-    void setTime(long start, long stop) {
+    public void setTime(long start, long stop) {
         this.time = (stop - start) / 1000000;
     }
 
-    void setInput2(String input2) {
+    public void setInput2(String input2) {
         this.input2 = input2;
     }
 
-    void setHash2(long hash2) {
+    public void setHash2(long hash2) {
         this.hash2 = hash2;
     }
 
-    void setLoc2(int loc2) {
+    public void setLoc2(int loc2) {
         this.loc2 = loc2;
     }
 
-    void setConfirmed(boolean confirmed) {
+    public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
     }
 
-    String getInput() {
+    public String getInput() {
         return input;
     }
 
-    long getHash() {
+    public long getHash() {
         return hash;
     }
 
-    long getTime() {
+    public long getTime() {
         return time;
     }
 
-    int getMatchAttempts() {
+    public int getMatchAttempts() {
         return matchAttempts;
     }
 
-    String getInput2() {
+    public String getInput2() {
         return input2;
     }
 
-    long getHash2() {
+    public long getHash2() {
         return hash2;
     }
 
-    int getLoc2() {
+    public int getLoc2() {
         return loc2;
     }
 
-    boolean isConfirmed() {
+    public boolean isConfirmed() {
         return confirmed;
     }
 }

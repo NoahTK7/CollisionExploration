@@ -2,15 +2,16 @@
  * Copyright (c) 2018 Noah Kurrack. All rights reserved.
  */
 
-package com.noahkurrack;
+package com.noahkurrack.collision.out;
 
 import com.github.tomaslanger.chalk.Ansi;
+import com.noahkurrack.collision.Runner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 
-class Output {
+public class Output {
 
     private static ArrayList<String> collisionsStatus;
     private static ArrayList<Future> futures;
@@ -19,7 +20,7 @@ class Output {
     private static int running;
     private static int perThreadAmount;
 
-    static void init(ArrayList<Future> futures, int perThread) {
+    public static void init(ArrayList<Future> futures, int perThread) {
         running = futures.size();
         perThreadAmount = perThread;
         collisionsStatus = new ArrayList<>();
@@ -60,11 +61,11 @@ class Output {
         //TODO: log collisions after
     }
 
-    static void submit(int id, String status) {
+    public static void submit(int id, String status) {
         collisionsStatus.set(id, status);
     }
 
-    static void update(int id, int current) {
+    public static void update(int id, int current) {
         threadStatus.replace(id, current);
     }
 }

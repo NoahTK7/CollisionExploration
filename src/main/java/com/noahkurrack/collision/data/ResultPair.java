@@ -2,22 +2,22 @@
  * Copyright (c) 2018 Noah Kurrack. All rights reserved.
  */
 
-package com.noahkurrack;
+package com.noahkurrack.collision.data;
 
-class ResultPair {
+public class ResultPair {
 
     private final String input;
     private final long hash;
 
-    ResultPair(String input, long hash) {
+    public ResultPair(String input, long hash) {
         this.input = input;
         this.hash = hash;
     }
 
-    String getInput() {
+    public String getInput() {
         return input;
     }
-    long getHash() {
+    public long getHash() {
         return hash;
     }
 

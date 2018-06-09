@@ -2,7 +2,13 @@
  * Copyright (c) 2018 Noah Kurrack. All rights reserved.
  */
 
-package com.noahkurrack;
+package com.noahkurrack.collision;
+
+import com.noahkurrack.collision.data.Collision;
+import com.noahkurrack.collision.data.Config;
+import com.noahkurrack.collision.data.ResultPair;
+import com.noahkurrack.collision.out.FileManager;
+import com.noahkurrack.collision.out.Output;
 
 import java.util.ArrayList;
 import java.util.Collections;

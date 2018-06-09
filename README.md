@@ -22,7 +22,7 @@ Uses Shadow plugin to create 'fat jar' that includes dependencies for distributi
 #### Gradle
     java -server -jar build/libs/CollisionExploration-<version>-all.jar
 #### Manual
-    java -server -cp "out/:lib/json-simple-1.1.1.jar:lib/jcommander-1.72.jar:lib/chalk-1.0.2.jar" com.noahkurrack.Runner <args>
+    java -server -cp "out/:lib/json-simple-1.1.1.jar:lib/jcommander-1.72.jar:lib/chalk-1.0.2.jar" com.noahkurrack.collision.Runner <args>
 
 
 Runner class arguments:

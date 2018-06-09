@@ -2,7 +2,9 @@
  * Copyright (c) 2018 Noah Kurrack. All rights reserved.
  */
 
-package com.noahkurrack;
+package com.noahkurrack.collision;
+
+import com.noahkurrack.collision.out.Output;
 
 public class CollisionThread implements Runnable {
 

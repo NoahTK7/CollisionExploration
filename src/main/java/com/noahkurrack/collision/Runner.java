@@ -2,11 +2,14 @@
  * Copyright (c) 2018 Noah Kurrack. All rights reserved.
  */
 
-package com.noahkurrack;
+package com.noahkurrack.collision;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
+import com.noahkurrack.collision.data.Config;
+import com.noahkurrack.collision.out.FileManager;
+import com.noahkurrack.collision.out.Output;
 import org.json.simple.parser.ParseException;
 import java.io.*;
 
@@ -87,7 +90,7 @@ public class Runner {
         executor = Executors.newFixedThreadPool(threads);
     }
 
-    static ExecutorService getExecutor() {
+    public static ExecutorService getExecutor() {
         return executor;
     }
 }

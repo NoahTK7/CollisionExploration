@@ -2,8 +2,10 @@
  * Copyright (c) 2018 Noah Kurrack. All rights reserved.
  */
 
-package com.noahkurrack;
+package com.noahkurrack.collision.out;
 
+import com.noahkurrack.collision.data.Config;
+import com.noahkurrack.collision.data.Collision;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,12 +14,12 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.util.ArrayList;
 
-class FileManager {
+public class FileManager {
 
     private static boolean simple;
     private File output;
 
-    FileManager(int threadId) {
+    public FileManager(int threadId) {
         simple = Config.SIMPLE_FILE;
         if (simple) {
             output = new File("out/collisions-" + threadId + ".txt");
@@ -26,7 +28,7 @@ class FileManager {
         }
     }
 
-    void writeToFile(Collision collision) {
+    public void writeToFile(Collision collision) {
         //serialize data to json, output to file
         JSONParser jsonParser = new JSONParser();
         JSONObject json;
@@ -64,7 +66,7 @@ class FileManager {
         }
     }
 
-    static void processFiles() throws IOException, ParseException {
+    public static void processFiles() throws IOException, ParseException {
         //combine collision files
         System.out.println("\nProcessing concurrent files...");
 
@@ -115,7 +117,7 @@ class FileManager {
         }
     }
 
-    void writeToFileSimple(Collision collision) {
+    public void writeToFileSimple(Collision collision) {
         /* TODO: output plain text per thread
         System.out.println("Collided hash:\t" + collision.getInput() + " --> " + collision.getHash() + "\n\t\t\t\t" +
                 collision.getInput2() + " --> " + collision.getHash2());
@@ -127,7 +129,7 @@ class FileManager {
         */
     }
 
-    static void processFilesSimple() throws IOException, ParseException {
+    public static void processFilesSimple() throws IOException, ParseException {
         //TODO: append text files
     }
 }
