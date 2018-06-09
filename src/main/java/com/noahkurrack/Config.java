@@ -4,10 +4,10 @@
 
 package com.noahkurrack;
 
-public class Config {
+class Config {
 
-    public static int AMOUNT = 2;
-    public static boolean VERBOSE = false;
-    public static boolean NO_FILE = false;
+    static int AMOUNT = 2;
+    static boolean VERBOSE = false;
+    static boolean SIMPLE_FILE = false;
 
 }

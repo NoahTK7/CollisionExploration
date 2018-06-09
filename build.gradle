@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-version = "1.2.2"
+version = "1.3.0"
 
 repositories {
     mavenCentral()
@@ -15,7 +15,8 @@ dependencies {
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
     // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
-
+    // https://mvnrepository.com/artifact/com.github.tomas-langer/chalk
+    compile group: 'com.github.tomas-langer', name: 'chalk', version: '1.0.2'
 }
 
 jar {

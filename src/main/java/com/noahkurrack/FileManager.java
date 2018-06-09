@@ -14,10 +14,16 @@ import java.util.ArrayList;
 
 class FileManager {
 
+    private static boolean simple;
     private File output;
 
     FileManager(int threadId) {
-        output = new File("out/collisions-"+threadId+".json");
+        simple = Config.SIMPLE_FILE;
+        if (simple) {
+            output = new File("out/collisions-" + threadId + ".txt");
+        } else {
+            output = new File("out/collisions-" + threadId + ".json");
+        }
     }
 
     void writeToFile(Collision collision) {
@@ -60,7 +66,7 @@ class FileManager {
 
     static void processFiles() throws IOException, ParseException {
         //combine collision files
-        System.out.println("Processing concurrent files...");
+        System.out.println("\nProcessing concurrent files...");
 
         ArrayList<File> files = new ArrayList<>();
 
@@ -107,5 +113,21 @@ class FileManager {
         for (File currentFile : files) {
             currentFile.delete();
         }
+    }
+
+    void writeToFileSimple(Collision collision) {
+        /* TODO: output plain text per thread
+        System.out.println("Collided hash:\t" + collision.getInput() + " --> " + collision.getHash() + "\n\t\t\t\t" +
+                collision.getInput2() + " --> " + collision.getHash2());
+
+        System.out.println("Number of attempts:\t" + (collision.getMatchAttempts() + 1) + ", (First occurrence: " +
+                (collision.getLoc2() + 1) + ")");
+
+        System.out.println("Time elapsed: " + collision.getTime() + " milliseconds\n------------------------\n");
+        */
+    }
+
+    static void processFilesSimple() throws IOException, ParseException {
+        //TODO: append text files
     }
 }

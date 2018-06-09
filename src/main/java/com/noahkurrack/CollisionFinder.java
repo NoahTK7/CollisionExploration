@@ -58,8 +58,8 @@ public class CollisionFinder {
             long hash = hasher.getValue();
 
             //displays current progress to user
-            if (Config.VERBOSE && i % 100 == 0) {
-                System.out.print("\rCurrent hash: " + hash + "       \t\t(hash #" + (i + 1) + ")");
+            if (Config.VERBOSE) {
+                Output.submit(threadId, String.valueOf(hash)+"--"+String.valueOf(i+1));
             }
 
             ResultPair resultPair = new ResultPair(currentString, hash);
@@ -93,12 +93,10 @@ public class CollisionFinder {
                     currentCollision.setConfirmed(true);
                 }
 
-                //displays information about the collision to record in a spreadsheet
-                System.out.println("\n[Thread: "+threadId+"] Collision!\n");
-                Logger.logCollision(currentCollision);
-
                 //file manager
-                if (!Config.NO_FILE) {
+                if (Config.SIMPLE_FILE) {
+                    fileManager.writeToFileSimple(currentCollision);
+                } else {
                     //serialize data to json, output to file
                     fileManager.writeToFile(currentCollision);
                 }
