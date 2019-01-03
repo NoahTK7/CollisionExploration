@@ -1,3 +1,5 @@
+##### UPDATE: Read the accompanying research paper that this project was written for [here](./write-up.pdf).
+
 ## About
 Finds and records statistics about collisions in the CRC32 hashing algorithm.
 
