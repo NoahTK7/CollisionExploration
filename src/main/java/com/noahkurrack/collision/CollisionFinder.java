@@ -6,13 +6,14 @@ package com.noahkurrack.collision;
 
 import com.noahkurrack.collision.data.Collision;
 import com.noahkurrack.collision.data.Config;
-import com.noahkurrack.collision.data.ResultPair;
+import com.noahkurrack.collision.data.StringPair;
 import com.noahkurrack.collision.out.FileManager;
 import com.noahkurrack.collision.out.Output;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.zip.CRC32;
 
 public class CollisionFinder {
@@ -24,7 +25,9 @@ public class CollisionFinder {
     }
 
     //list of attempted inputs (strings) and their respective outputs (hashes)
-    private ArrayList<ResultPair> results;
+    //private ArrayList<ResultPair> results;
+
+    private final Map<Long, StringPair> resultsMap;
 
     private FileManager fileManager;
     private CRC32 hasher;
@@ -35,7 +38,8 @@ public class CollisionFinder {
         //creates object that contains algorithm, takes input to produce hashes
         hasher = new CRC32();
 
-        this.results = new ArrayList<>();
+        //this.results = new ArrayList<>();
+        this.resultsMap = Collections.synchronizedMap(new LinkedHashMap<>());
         this.threadId = threadId;
         this.fileManager = new FileManager(threadId);
     }
@@ -46,7 +50,9 @@ public class CollisionFinder {
         long startTime = System.nanoTime();
 
         //add one default hash (0) to array of outputs
-        results.add(new ResultPair("", hasher.getValue()));
+        //results.add(new ResultPair("", hasher.getValue()));
+
+        resultsMap.clear();
 
         //loop until collision found, max 2^32-1 (same amount of possible hashes)
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
@@ -68,30 +74,35 @@ public class CollisionFinder {
                 Output.submit(threadId, String.valueOf(hash)+"--"+String.valueOf(i+1));
             }
 
-            ResultPair resultPair = new ResultPair(currentString, hash);
+            StringPair prevVal = null;
 
-            //checks if collision found
-            //if no collision, code attempts again
-            if (!insertInOrder(resultPair)) {
+            synchronized (resultsMap) {
+                if (!resultsMap.isEmpty()) {
+                    prevVal = resultsMap.get(hash);
+                }
+            }
+
+            if (prevVal == null) {
+                synchronized (resultsMap) {
+                    resultsMap.put(hash, new StringPair(currentString, i));
+                }
+            } else {
+                //collision
+                //System.out.println("Collision...!");
 
                 //executes when collision found
-                Collision currentCollision = new Collision(resultPair, i);
+                Collision currentCollision = new Collision(new StringPair(currentString, i), hash);
 
                 //stops timer
                 long stopTime = System.nanoTime();
                 currentCollision.setTime(startTime, stopTime);
 
-                //finds first string that produces same hash as current string
-                //only executes after collision found (that means there is always two inputs that produce the given output, this code finds the first one)
-                int otherIndex = Collections.binarySearch(results, new ResultPair(" ", hash), Comparator.comparing(ResultPair::getHash));
-                String firstString = results.get(otherIndex).getInput();
-
-                currentCollision.setLoc2(otherIndex);
-                currentCollision.setInput2(firstString);
+                currentCollision.setLoc2(prevVal.getIndex());
+                currentCollision.setInput2(prevVal.getString());
 
                 //confirms outputs match for both inputs
                 hasher.reset();
-                hasher.update(firstString.getBytes());
+                hasher.update(prevVal.getString().getBytes());
                 long confirmHash = hasher.getValue();
                 currentCollision.setHash2(confirmHash);
 
@@ -107,10 +118,14 @@ public class CollisionFinder {
                     fileManager.writeToFile(currentCollision);
                 }
 
+                resultsMap.clear();
+
                 //exit program
                 break;
             }
         }
+
+        //System.out.println("10");
     }
 
     //possible characters used when generating random strings
@@ -132,6 +147,8 @@ public class CollisionFinder {
 
     }
 
+    //***
+    /*
     //checks if collision has occurred (i.e. if output has been produced before)
     //otherwise, inserts input and output into their respective lists
     private boolean insertInOrder(ResultPair resultPair) {
@@ -148,8 +165,10 @@ public class CollisionFinder {
         results.add(resultPair);
         return true;
     }
+    */
+    //***
 
     void reset() {
-        results.clear();
+        resultsMap.clear();
     }
 }

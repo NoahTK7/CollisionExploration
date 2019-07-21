@@ -17,10 +17,10 @@ public class Collision {
     private int loc2;
     private boolean confirmed;
 
-    public Collision(ResultPair resultPair, int matchAttempts) {
-        this.input = resultPair.getInput();
-        this.hash = resultPair.getHash();
-        this.matchAttempts = matchAttempts;
+    public Collision(StringPair stringPair, long hash) {
+        this.input = stringPair.getString();
+        this.hash = hash;
+        this.matchAttempts = stringPair.getIndex();
 
         this.time = -1;
         this.input2 = null;

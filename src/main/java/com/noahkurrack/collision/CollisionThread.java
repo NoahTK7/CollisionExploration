@@ -25,11 +25,15 @@ public class CollisionThread implements Runnable {
     @Override
     public void run() {
         //run collision finder several times (data recorded to json file)
+        //System.out.println("run");
         while (current < total) {
             collisionFinder.reset();
             collisionFinder.findCollisions();
+            //collisionFinder.reset();
             current++;
             Output.update(threadId, current+1);
         }
+
+        //System.out.println("run method over");
     }
 }
