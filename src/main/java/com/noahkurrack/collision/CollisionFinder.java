@@ -12,7 +12,6 @@ import com.noahkurrack.collision.out.Output;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.CRC32;
 
@@ -39,7 +38,7 @@ public class CollisionFinder {
         hasher = new CRC32();
 
         //this.results = new ArrayList<>();
-        this.resultsMap = Collections.synchronizedMap(new LinkedHashMap<>());
+        this.resultsMap = Collections.synchronizedMap(new HashMap<>());
         this.threadId = threadId;
         this.fileManager = new FileManager(threadId);
     }
@@ -76,19 +75,15 @@ public class CollisionFinder {
 
             StringPair prevVal = null;
 
-            synchronized (resultsMap) {
-                if (!resultsMap.isEmpty()) {
-                    prevVal = resultsMap.get(hash);
-                }
-            }
-
-            if (prevVal == null) {
-                synchronized (resultsMap) {
-                    resultsMap.put(hash, new StringPair(currentString, i));
-                }
+            if (!resultsMap.containsKey(hash)) {
+                resultsMap.put(hash, new StringPair(currentString, i));
             } else {
                 //collision
                 //System.out.println("Collision...!");
+
+                prevVal = resultsMap.get(hash);
+
+                //System.out.println(prevVal.getString()+" _____ "+prevVal.getIndex());
 
                 //executes when collision found
                 Collision currentCollision = new Collision(new StringPair(currentString, i), hash);
@@ -121,7 +116,7 @@ public class CollisionFinder {
                 resultsMap.clear();
 
                 //exit program
-                break;
+                return;
             }
         }
 
@@ -136,7 +131,7 @@ public class CollisionFinder {
 
     //returns a string of random characters of a specified length
     //from https://dzone.com/articles/generate-random-alpha-numeric
-    private static String randomStringGenerator() {
+    private String randomStringGenerator() {
         int size = 8;
         StringBuilder builder = new StringBuilder();
         while (size-- != 0) {

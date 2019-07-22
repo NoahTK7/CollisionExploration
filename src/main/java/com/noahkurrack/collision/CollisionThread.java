@@ -12,11 +12,9 @@ public class CollisionThread implements Runnable {
     private int current;
 
     private int threadId;
-    private CollisionFinder collisionFinder;
 
     CollisionThread(int threadId, int total) {
         this.threadId = threadId;
-        this.collisionFinder = new CollisionFinder(this.threadId);
 
         this.total = total;
         this.current = 0;
@@ -25,15 +23,12 @@ public class CollisionThread implements Runnable {
     @Override
     public void run() {
         //run collision finder several times (data recorded to json file)
-        //System.out.println("run");
+        CollisionFinder collisionFinder = new CollisionFinder(this.threadId);
         while (current < total) {
-            collisionFinder.reset();
             collisionFinder.findCollisions();
-            //collisionFinder.reset();
+            collisionFinder.reset();
             current++;
             Output.update(threadId, current+1);
         }
-
-        //System.out.println("run method over");
     }
 }

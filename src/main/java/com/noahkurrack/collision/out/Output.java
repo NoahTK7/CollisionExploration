@@ -15,7 +15,7 @@ public class Output {
 
     private static ArrayList<String> collisionsStatus;
     private static ArrayList<Future> futures;
-    private static HashMap<Integer, Integer> threadStatus;
+    private static ArrayList<Integer> threadStatus;
 
     private static int running;
     private static int perThreadAmount;
@@ -27,9 +27,9 @@ public class Output {
         for (int i = 0; i < futures.size(); i++) {
             collisionsStatus.add("0--0");
         }
-        threadStatus = new HashMap<>();
+        threadStatus = new ArrayList<Integer>();
         for (int i = 0; i < futures.size(); i++) {
-            threadStatus.put(i, 1);
+            threadStatus.add(i, 1);
         }
         Output.futures = futures;
         System.out.print("\n\n\n\n");
@@ -61,11 +61,12 @@ public class Output {
         //TODO: log collisions after
     }
 
-    public static void submit(int id, String status) {
+    public static synchronized void submit(int id, String status) {
         collisionsStatus.set(id, status);
     }
 
-    public static void update(int id, int current) {
-        threadStatus.replace(id, current);
+    public static synchronized void update(int id, int current) {
+        //System.out.println("id: "+id+" current: "+current);
+        threadStatus.set(id, current);
     }
 }

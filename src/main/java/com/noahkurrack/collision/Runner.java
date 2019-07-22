@@ -72,7 +72,12 @@ public class Runner {
         executor.shutdown();
 
         if (verbose) {
-            Output.init(futures, perThreadAmount);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Output.init(futures, perThreadAmount);
+                }
+            }).run();
         }
 
         while (true) {
