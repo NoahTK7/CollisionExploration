@@ -6,6 +6,7 @@ package com.noahkurrack.collision.out;
 
 import com.github.tomaslanger.chalk.Ansi;
 import com.noahkurrack.collision.Runner;
+import com.noahkurrack.collision.data.Config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +39,18 @@ public class Output {
 
     private static void run() {
         while (!Runner.getExecutor().isTerminated()) {
-            StringBuilder output = new StringBuilder("\rCurrently running " + running + " threads...");
             running = futures.size();
-            for (int i = 0; i < futures.size(); i++) {
-                output.append("\n\r[Thread ").append(i+1).append("] ");
-                if (futures.get(i).isDone()) {
-                    running--;
-                    output.append("Found hash ").append(perThreadAmount).append(" of ").append(perThreadAmount).append(". Done.");
-                } else {
-                    String[] stats = collisionsStatus.get(i).split("--");
-                    output.append("Finding hash ").append(threadStatus.get(i)).append(" of ").append(perThreadAmount).append(". Current hash: ").append(stats[0]).append("       \t(hash #").append(stats[1]).append(")");
+            StringBuilder output = new StringBuilder("\rCurrently running " + running + " threads...");
+            if (Config.VERBOSE) {
+                for (int i = 0; i < futures.size(); i++) {
+                    output.append("\n\r[Thread ").append(i + 1).append("] ");
+                    if (futures.get(i).isDone()) {
+                        running--;
+                        output.append("Found hash ").append(perThreadAmount).append(" of ").append(perThreadAmount).append(". Done.");
+                    } else {
+                        String[] stats = collisionsStatus.get(i).split("--");
+                        output.append("Finding hash ").append(threadStatus.get(i)).append(" of ").append(perThreadAmount).append(". Current hash: ").append(stats[0]).append("       \t(hash #").append(stats[1]).append(")");
+                    }
                 }
             }
             String reset = Ansi.eraseLine()+Ansi.cursorUp()+Ansi.eraseLine()+Ansi.cursorUp()+Ansi.eraseLine()+Ansi.cursorUp()+Ansi.eraseLine()+Ansi.cursorUp();

@@ -62,6 +62,7 @@ public class Runner {
         } else {
             perThreadAmount = amount / threads;
             System.out.println("Running "+ perThreadAmount +" iterations per "+threads+" threads for a total of "+threads* perThreadAmount +" iterations...");
+            // TODO what to do with remainder (e.g. 14 % 4 = 2; currently runs 4 * 3 = 12 so 2 iterations are lost)
         }
 
         ArrayList<Future> futures = new ArrayList<>();
@@ -71,14 +72,12 @@ public class Runner {
 
         executor.shutdown();
 
-        if (verbose) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Output.init(futures, perThreadAmount);
-                }
-            }).run();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Output.init(futures, perThreadAmount);
+            }
+        }).run();
 
         while (true) {
             if(executor.awaitTermination(10, TimeUnit.SECONDS)) {
