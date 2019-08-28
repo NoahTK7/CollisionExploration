@@ -37,14 +37,24 @@ public class Output {
     }
 
     private static void run() {
+
         while (!Runner.getExecutor().isTerminated()) {
+
+            StringBuilder output = new StringBuilder();
+
             running = futures.size();
-            StringBuilder output = new StringBuilder("\rCurrently running " + running + " threads...");
-            if (Config.VERBOSE) {
-                for (int i = 0; i < futures.size(); i++) {
+            for (Future future : futures) {
+                if (future.isDone()) {
+                    running--;
+                }
+            }
+
+            output.append("\rCurrently running ").append(running).append(" threads...");
+
+            for (int i = 0; i < futures.size(); i++) {
+                if (Config.VERBOSE) {
                     output.append("\n\r[Thread ").append(i + 1).append("] ");
                     if (futures.get(i).isDone()) {
-                        running--;
                         output.append("Found hash ").append(perThreadAmount).append(" of ").append(perThreadAmount).append(". Done.");
                     } else {
                         String[] stats = collisionsStatus.get(i).split("--");
@@ -52,6 +62,7 @@ public class Output {
                     }
                 }
             }
+
             String reset = Ansi.eraseLine()+Ansi.cursorUp()+Ansi.eraseLine()+Ansi.cursorUp()+Ansi.eraseLine()+Ansi.cursorUp()+Ansi.eraseLine()+Ansi.cursorUp();
             System.out.print(reset+output);
             try {
