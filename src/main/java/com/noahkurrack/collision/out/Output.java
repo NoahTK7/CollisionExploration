@@ -9,7 +9,6 @@ import com.noahkurrack.collision.Runner;
 import com.noahkurrack.collision.data.Config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.Future;
 
 public class Output {
